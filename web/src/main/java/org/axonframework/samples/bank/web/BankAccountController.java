@@ -36,6 +36,7 @@ import java.util.UUID;
 @MessageMapping("/bank-accounts")
 public class BankAccountController {
 
+    // 用于命令调度
     private final CommandGateway commandGateway;
     private final BankAccountRepository bankAccountRepository;
 

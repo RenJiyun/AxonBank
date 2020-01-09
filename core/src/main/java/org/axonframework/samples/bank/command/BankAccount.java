@@ -29,23 +29,31 @@ public class BankAccount {
 
     @AggregateIdentifier
     private String id;
+
+    // 透支上限
     private long overdraftLimit;
+
+    // 余额
     private long balanceInCents;
 
     @SuppressWarnings("unused")
     private BankAccount() {
     }
 
+    // 处理开户命令
     @CommandHandler
     public BankAccount(CreateBankAccountCommand command) {
         apply(new BankAccountCreatedEvent(command.getBankAccountId(), command.getOverdraftLimit()));
     }
 
+
+    // 处理存款命令
     @CommandHandler
     public void deposit(DepositMoneyCommand command) {
         apply(new MoneyDepositedEvent(id, command.getAmountOfMoney()));
     }
 
+    // 处理提款命令
     @CommandHandler
     public void withdraw(WithdrawMoneyCommand command) {
         if (command.getAmountOfMoney() <= balanceInCents + overdraftLimit) {
@@ -56,8 +64,7 @@ public class BankAccount {
     public void debit(long amount, String bankTransferId) {
         if (amount <= balanceInCents + overdraftLimit) {
             apply(new SourceBankAccountDebitedEvent(id, amount, bankTransferId));
-        }
-        else {
+        } else {
             apply(new SourceBankAccountDebitRejectedEvent(bankTransferId));
         }
     }

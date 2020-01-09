@@ -21,11 +21,17 @@ import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 import javax.validation.constraints.Min;
 
+/**
+ * 开户命令
+ */
 @Value
 public class CreateBankAccountCommand {
 
+    // 目标聚合的标识
     @TargetAggregateIdentifier
     private String bankAccountId;
+
+    // 透支上限
     @Min(value = 0, message = "Overdraft limit must not be less than zero")
     private long overdraftLimit;
 }
